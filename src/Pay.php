@@ -73,12 +73,13 @@ class Pay
 
         try {
             $response = $this->post(self::HOST[$this->config->get('mode', 'dev')].self::API_ROUTE['qrCodePay'], [], ['json' => $curl_data]);
-            if (empty($response['status']) || $response['status'] !== 100 || empty($response['codeUrl'])) {
+            if (empty($response['status']) || $response['status'] !== 100 || empty($response['codeUrl']) || empty($response['orderId'])) {
                 throw new HttpException('返回异常：'.$response['message'] ?? '未知错误');
             }
             return [
                 'codeUrl' => $response['codeUrl'],
-                'lowOrderId' => $lowOrderId
+                'lowOrderId' => $lowOrderId,
+                'orderId' => $response['orderId'],
             ];
         } catch (\Exception $e) {
             throw new HttpException($e->getMessage());
